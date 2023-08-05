@@ -31,5 +31,8 @@
 		"unplugin-icons": "^0.16.5",
 		"vite": "^4.4.2"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"@unocss/reset": "^0.54.1"
+	}
 }
