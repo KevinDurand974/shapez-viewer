@@ -1,19 +1,20 @@
 import type { Params } from './types';
-import { setColor } from './utils';
+import { defaultBorderColor, getCoef, setColor } from './utils';
 
 export const drawRectangle = (params: Params) => {
 	const defaultOptions: Required<Params> = {
+		borderColor: defaultBorderColor,
 		color: 'Base',
-		stack: 1,
+		layer: 1,
 		borderSize: 7,
 		...params
 	};
 
-	const { ctx, size, borderSize, color, position, stack } = defaultOptions;
+	const { ctx, size, borderSize, color, position, layer, borderColor } = defaultOptions;
 
 	ctx.beginPath();
 
-	ctx.strokeStyle = '#111418';
+	ctx.strokeStyle = borderColor;
 	ctx.fillStyle = setColor(color);
 
 	ctx.lineWidth = borderSize;
@@ -27,10 +28,7 @@ export const drawRectangle = (params: Params) => {
 	let width = 0;
 	let height = 0;
 
-	let coef = 1;
-	if (stack === 2) coef = 0.75;
-	else if (stack === 3) coef = 0.5;
-	else if (stack === 4) coef = 0.25;
+	const coef = getCoef(layer);
 
 	switch (position) {
 		case 'TL':
@@ -38,49 +36,37 @@ export const drawRectangle = (params: Params) => {
 			posY = size - size * coef;
 			width = size * coef;
 			height = size * coef;
-			break;
-		case 'TR':
-			posX = size;
-			posY = size - size * coef;
-			width = size * coef;
-			height = size * coef;
-			break;
-		case 'BR':
-			posX = size;
-			posY = size;
-			width = size * coef;
-			height = size * coef;
-			break;
-		case 'BL':
-			posX = size - size * coef;
-			posY = size;
-			width = size * coef;
-			height = size * coef;
-			break;
-	}
 
-	ctx.rect(posX, posY, width, height);
-	ctx.fill();
-
-	ctx.closePath();
-
-	ctx.beginPath();
-
-	switch (position) {
-		case 'TL':
 			ctx.rect(posX + midBorder, posY + midBorder, width - midBorder, height - midBorder);
 			break;
 		case 'TR':
+			posX = size;
+			posY = size - size * coef;
+			width = size * coef;
+			height = size * coef;
+
 			ctx.rect(posX, posY + midBorder, width - midBorder, height - midBorder);
 			break;
 		case 'BR':
+			posX = size;
+			posY = size;
+			width = size * coef;
+			height = size * coef;
+
 			ctx.rect(posX, posY, width - midBorder, height - midBorder);
 			break;
 		case 'BL':
+			posX = size - size * coef;
+			posY = size;
+			width = size * coef;
+			height = size * coef;
+
 			ctx.rect(posX + midBorder, posY, width - midBorder, height - midBorder);
 			break;
 	}
 
+	ctx.fill();
 	ctx.stroke();
+
 	ctx.closePath();
 };

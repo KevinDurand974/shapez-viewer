@@ -1,19 +1,20 @@
 import type { Params } from './types';
-import { setColor } from './utils';
+import { defaultBorderColor, getCoef, setColor } from './utils';
 
 export const drawCircle = (params: Params) => {
 	const defaultOptions: Required<Params> = {
 		color: 'Base',
-		stack: 1,
+		borderColor: defaultBorderColor,
+		layer: 1,
 		borderSize: 7,
 		...params
 	};
 
-	const { ctx, size, borderSize, color, position, stack } = defaultOptions;
+	const { ctx, size, borderSize, color, position, layer, borderColor } = defaultOptions;
 
 	ctx.beginPath();
 
-	ctx.strokeStyle = '#111418';
+	ctx.strokeStyle = borderColor;
 	ctx.fillStyle = setColor(color);
 
 	ctx.lineCap = 'butt';
@@ -24,37 +25,64 @@ export const drawCircle = (params: Params) => {
 	let rotateA = 0;
 	let rotateB = 0;
 
-	let coef = 1;
-	if (stack === 2) coef = 0.75;
-	else if (stack === 3) coef = 0.5;
-	else if (stack === 4) coef = 0.25;
-
-	switch (position) {
-		case 'TL':
-			rotateA = 1;
-			rotateB = 1.5;
-			break;
-		case 'TR':
-			rotateA = 1.5;
-			rotateB = 0;
-			break;
-		case 'BR':
-			rotateA = 0;
-			rotateB = 0.5;
-			break;
-		case 'BL':
-			rotateA = 0.5;
-			rotateB = 1;
-			break;
-	}
+	const coef = getCoef(layer);
 
 	ctx.lineWidth = borderSize;
 
 	ctx.beginPath();
 
-	ctx.lineTo(size, size);
-	ctx.arc(size, size, size * coef - borderSize, Math.PI * rotateA, Math.PI * rotateB);
-	ctx.lineTo(size, size);
+	switch (position) {
+		case 'TL':
+			rotateA = 1;
+			rotateB = 1.5;
+			ctx.arc(
+				size - midBorder,
+				size - midBorder,
+				size * coef - borderSize - midBorder,
+				Math.PI * rotateA,
+				Math.PI * rotateB
+			);
+			ctx.lineTo(size - midBorder, size - midBorder);
+
+			break;
+		case 'TR':
+			rotateA = 1.5;
+			rotateB = 0;
+			ctx.arc(
+				size + midBorder,
+				size - midBorder,
+				size * coef - borderSize - midBorder,
+				Math.PI * rotateA,
+				Math.PI * rotateB
+			);
+			ctx.lineTo(size + midBorder, size - midBorder);
+			break;
+		case 'BR':
+			rotateA = 0;
+			rotateB = 0.5;
+			ctx.arc(
+				size + midBorder,
+				size + midBorder,
+				size * coef - borderSize - midBorder,
+				Math.PI * rotateA,
+				Math.PI * rotateB
+			);
+			ctx.lineTo(size + midBorder, size + midBorder);
+			break;
+		case 'BL':
+			rotateA = 0.5;
+			rotateB = 1;
+			ctx.arc(
+				size - midBorder,
+				size + midBorder,
+				size * coef - borderSize - midBorder,
+				Math.PI * rotateA,
+				Math.PI * rotateB
+			);
+			ctx.lineTo(size - midBorder, size + midBorder);
+
+			break;
+	}
 
 	ctx.fill();
 	ctx.closePath();

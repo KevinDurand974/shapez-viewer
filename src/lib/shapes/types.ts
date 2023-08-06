@@ -13,6 +13,7 @@ export type Params = {
 	size: number;
 	position: 'TR' | 'BR' | 'BL' | 'TL';
 	color?: ShapeColors;
-	stack?: 1 | 2 | 3 | 4;
+	borderColor?: string;
+	layer?: 1 | 2 | 3 | 4;
 	borderSize?: number;
 };

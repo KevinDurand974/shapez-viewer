@@ -20,3 +20,16 @@ export const setColor = (name: ShapeColors) => {
 			return '#fcf52a';
 	}
 };
+
+export const defaultBorderColor = '#111418';
+
+let maxLayer = 4;
+
+export const setLayer = (newMax: number) => {
+	maxLayer = newMax;
+};
+
+export const getCoef = (layer: number) => {
+	const coef = 1 / maxLayer;
+	return coef * (maxLayer + 1 - layer);
+};
